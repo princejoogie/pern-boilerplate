@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "Awesome project developed with TypeORM.",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.4",
+    "@types/node": "^16.6.2",
+    "rimraf": "^3.0.2",
+    "ts-node": "10.2.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "4.3.5"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.25.2",
+    "argon2": "^0.28.2",
+    "class-validator": "^0.13.1",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "graphql": "^15.5.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1",
+    "typeorm": "0.2.37",
+    "typeorm-extension": "^0.2.9"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
+    "schema:drop": "ts-node src/scripts/drop.ts",
+    "migration:create": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:create -n init",
+    "migration:generate": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:generate",
+    "migration:run": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run",
+    "migration:revert": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:revert",
+    "compile": "rimraf dist && tsc"
+  }
+}
