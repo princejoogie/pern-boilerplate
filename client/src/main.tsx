@@ -14,21 +14,7 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { storeName } from "./constants";
 import { appStore, AppStoreType } from "./store/AppStore";
-import axios from "axios";
-
-const getNewToken = async () => {
-  try {
-    const { data } = await axios.post(
-      "http://localhost:4000/refresh-token",
-      null,
-      { withCredentials: true }
-    );
-    return data.accessToken;
-  } catch (err) {
-    console.log({ ...err });
-    return "";
-  }
-};
+import { getAccessToken } from "./utils/helpers";
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, forward, operation }) => {
@@ -37,7 +23,7 @@ const errorLink = onError(
         switch (err.extensions?.code) {
           case "UNAUTHENTICATED":
             return fromPromise(
-              getNewToken().catch(() => {
+              getAccessToken().catch(() => {
                 return;
               })
             )

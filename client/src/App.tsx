@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -7,6 +6,7 @@ import { PathURL } from "./constants";
 import { HomePage, LoginPage, RegisterPage } from "./pages";
 import { useAppStore } from "./store/AppStore";
 import { PulseLoader } from "react-spinners";
+import { getAccessToken } from "./utils/helpers";
 
 const App: React.FC = () => {
   const appStore = useAppStore();
@@ -14,17 +14,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        const { data } = await axios.post(
-          "http://localhost:4000/refresh-token",
-          null,
-          { withCredentials: true }
-        );
-        appStore.setAccessToken(data.accessToken);
-        setLoading(false);
-      } catch (err) {
-        console.log({ ...err });
-      }
+      const accessToken = await getAccessToken();
+      appStore.setAccessToken(accessToken);
+      setLoading(false);
     })();
   }, []);
 

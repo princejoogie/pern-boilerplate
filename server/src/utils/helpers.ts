@@ -19,7 +19,7 @@ export function generateAccessToken(user: User) {
     tokenVersion: user.tokenVersion,
   };
   const options: jwt.SignOptions = {
-    expiresIn: "15m",
+    expiresIn: "10m",
   };
 
   return jwt.sign(payload, getAccessTokenSecret(), options);
@@ -49,5 +49,5 @@ export async function verifyRefreshToken(token: string): Promise<TokenPayload> {
 }
 
 export function setRefreshToken(res: Response, token) {
-  res.cookie(__REFRESH_COOKIE_NAME, token, { httpOnly: true });
+  res.cookie(__REFRESH_COOKIE_NAME, token, { httpOnly: true, sameSite: "lax" });
 }

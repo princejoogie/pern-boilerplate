@@ -19,6 +19,14 @@ export class MeResolver {
     return payload.id;
   }
 
+  @Query(() => User)
+  @UseMiddleware(isAuth)
+  async profile(@Ctx() { payload }: MyContext): Promise<User> {
+    const user = User.findOne({ where: { id: payload.id } });
+    if (!user) throw new Error("Cannot find user");
+    return user;
+  }
+
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async revokeRefreshToken(
