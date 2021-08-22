@@ -1,8 +1,8 @@
 import { AuthenticationError } from "apollo-server-express";
 import { Middleware } from "type-graphql/dist/interfaces/Middleware";
 import { MyContext, TokenPayload } from "../types";
-import jwt from "jsonwebtoken";
 import { User } from "../entity/User";
+import jwt from "jsonwebtoken";
 
 export const isAuth: Middleware<MyContext> = async ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
