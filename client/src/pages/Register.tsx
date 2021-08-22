@@ -89,7 +89,6 @@ const TestRegister: React.FC<RouteProps> = () => {
           touched,
           handleChange,
           handleBlur,
-          handleSubmit,
           isSubmitting,
         }) => {
           return (

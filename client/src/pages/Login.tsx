@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ApolloError } from "@apollo/client";
-import { RouteProps } from "react-router";
-import { useHistory } from "react-router-dom";
+import { useHistory, RouteProps } from "react-router-dom";
 import { PathURL } from "../constants";
 import { useLoginMutation } from "../generated/graphql";
 import { useAppStore } from "../store/AppStore";

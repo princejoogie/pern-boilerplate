@@ -1,7 +1,8 @@
 import React from "react";
 import { RouteProps, useHistory } from "react-router-dom";
+import { C } from "../components/C";
 import { PathURL } from "../constants";
-import { useGetProfileQuery, useMeQuery } from "../generated/graphql";
+import { useGetProfileQuery } from "../generated/graphql";
 import { useAppStore } from "../store/AppStore";
 
 const Home: React.FC<RouteProps> = () => {
@@ -32,7 +33,9 @@ const Home: React.FC<RouteProps> = () => {
         Hi there, {firstName} {lastName}!
       </h2>
 
-      <button
+      <p className="text-sm text-gray-500">{email}</p>
+
+      <C.Button
         className="px-4 py-2 mt-4 text-white bg-green-500 rounded hover:opacity-70"
         onClick={async () => {
           await appStore.clearPersistedData();
@@ -41,7 +44,7 @@ const Home: React.FC<RouteProps> = () => {
         }}
       >
         Logout
-      </button>
+      </C.Button>
     </div>
   );
 };

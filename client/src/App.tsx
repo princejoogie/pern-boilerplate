@@ -1,9 +1,41 @@
 import React from "react";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import { PathURL } from "./constants";
 import { HomePage, LoginPage, RegisterPage } from "./pages";
+import { useAppStore } from "./store/AppStore";
+import { PulseLoader } from "react-spinners";
 
 const App: React.FC = () => {
+  const appStore = useAppStore();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.post(
+          "http://localhost:4000/refresh-token",
+          null,
+          { withCredentials: true }
+        );
+        appStore.setAccessToken(data.accessToken);
+        setLoading(false);
+      } catch (err) {
+        console.log({ ...err });
+      }
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid w-screen h-screen place-items-center">
+        <PulseLoader />
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <div>
