@@ -6,9 +6,9 @@ mutation Register(
 ) {
   register(
     data: {
-      email: $email
       firstName: $firstName
       lastName: $lastName
+      email: $email
       password: $password
     }
   ) {

@@ -1,80 +1,141 @@
 import React, { useState } from "react";
+import { ApolloError } from "@apollo/client";
 import { RouteProps } from "react-router";
+import { useHistory } from "react-router-dom";
+import { PathURL } from "../constants";
 import { useLoginMutation } from "../generated/graphql";
+import { useAppStore } from "../store/AppStore";
+import { PulseLoader } from "react-spinners";
+import { C } from "../components/C";
+import { Form, Formik } from "formik";
+
+interface FormFields {
+  email: string;
+  password: string;
+}
 
 const Login: React.FC<RouteProps> = () => {
-  const [login] = useLoginMutation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
-    setLoading(() => true);
-    e.preventDefault();
-    try {
-      const _email = email.trim();
-      const _password = password.trim();
-
-      const { data } = await login({
-        variables: {
-          email: _email,
-          password: _password,
-        },
-      });
-
-      const accessToken = data?.login.accessToken;
-
-      if (accessToken) {
-        console.log(accessToken);
-      } else {
-        console.log("Something went wrong");
-      }
-
-      setLoading(() => false);
-    } catch (err) {
-      console.log({ ...err });
-      setLoading(() => false);
-    }
+  const initialValues: FormFields = {
+    email: "",
+    password: "",
   };
+  const appStore = useAppStore();
+  const history = useHistory();
+  const [login] = useLoginMutation();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(
+    undefined
+  );
 
   return (
     <div>
-      <form onSubmit={onSubmit}>
-        <div className="flex flex-col items-start">
-          <label htmlFor="email" className="text-sm text-gray-500">
-            Email
-          </label>
-          <input
-            value={email}
-            onChange={({ target: { value } }) => setEmail(value)}
-            id="email"
-            type="email"
-            className="p-2 mt-1 bg-white rounded shadow"
-            placeholder="john@email.com"
-          />
-        </div>
+      <Formik<FormFields>
+        initialValues={initialValues}
+        validate={(values) => {
+          const errors: any = {};
 
-        <div className="flex flex-col items-start mt-3">
-          <label htmlFor="password" className="text-sm text-gray-500">
-            Password
-          </label>
-          <input
-            value={password}
-            onChange={({ target: { value } }) => setPassword(value)}
-            id="password"
-            type="password"
-            className="p-2 mt-1 bg-white rounded shadow"
-            placeholder="******"
-          />
-        </div>
+          if (!values.email.trim()) {
+            errors["email"] = "Required";
+          } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+              values.email.trim()
+            )
+          ) {
+            errors["email"] = "Invalid email address";
+          }
 
-        <button
-          type="submit"
-          className="px-4 py-2 mt-4 text-white bg-green-500 rounded hover:opacity-70"
-        >
-          {loading ? "Loading" : "Login"}
-        </button>
-      </form>
+          if (!values.password.trim()) errors["password"] = "Required";
+          else if (values.password.trim().length < 6)
+            errors["password"] = "Must be > 5 characters";
+
+          return errors;
+        }}
+        onSubmit={async ({ password, email }, { setSubmitting }) => {
+          try {
+            const _email = email.trim();
+            const _password = password.trim();
+
+            const { data, errors } = await login({
+              variables: {
+                email: _email,
+                password: _password,
+              },
+            });
+
+            if (errors) setErrorMessage(errors[0].message);
+
+            const accessToken = data?.login.accessToken;
+
+            if (accessToken) {
+              console.log(accessToken);
+              await appStore.setAccessToken(accessToken);
+              history.push(PathURL.home);
+            } else {
+              console.log("Something went wrong");
+            }
+
+            setSubmitting(false);
+          } catch (err) {
+            const _err = err as ApolloError;
+            setErrorMessage(_err.message);
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          isSubmitting,
+        }) => {
+          return (
+            <Form className="flex flex-col items-start space-y-4">
+              <C className="flex flex-col items-start">
+                <C.Label htmlFor="email">Email</C.Label>
+                <C.Input
+                  type="email"
+                  name="email"
+                  placeholder="john@email.com"
+                  value={values.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+                {errors.email && touched.email && (
+                  <C.ErrorMessage>{errors.email}</C.ErrorMessage>
+                )}
+              </C>
+
+              <C className="flex flex-col items-start mt-3">
+                <C.Label htmlFor="password">Password</C.Label>
+                <C.Input
+                  type="password"
+                  name="password"
+                  placeholder="******"
+                  value={values.password}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+                {errors.password && touched.password && (
+                  <C.ErrorMessage>{errors.password}</C.ErrorMessage>
+                )}
+              </C>
+
+              <C.Button type="submit">
+                {isSubmitting ? (
+                  <PulseLoader color="#fff" size={8} />
+                ) : (
+                  <p>Register</p>
+                )}
+              </C.Button>
+
+              {errorMessage && (
+                <span className="text-xs text-red-500">{errorMessage}</span>
+              )}
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 };
