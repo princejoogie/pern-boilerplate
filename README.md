@@ -1,5 +1,11 @@
 # PERN Boilerplate
 
+🚧 `WORK IN PROGRESS` 🚧
+
+`upcoming features:`
+- Email confirmation
+- Socials Login
+
 ## Features
 
 - GraphQL Server
