@@ -63,26 +63,7 @@
     cd ./<project-name>/server && yarn
 ```
 
-2. Create Postgres database
-   - `make sure to add postgres bin to environmental variables`
-
-```bash
-    createdb <db-name>
-    # or run the recreate sciprt
-    npm run schema:drop # !WARNING - this will recreate the database so only run this initially
-```
-
-3. Setup `.env` and `.env.development`
-
-```bash
-    # Content of .env and .env.development should have these 4 variables
-    PORT=4000
-    BASE_URL=http://localhost
-    ACCESS_TOKEN_SECRET=access_token_secret_here
-    REFRESH_TOKEN_SECRET=refresh_token_secret_here
-```
-
-4. Setup `ormconfig.json`
+2. Setup `ormconfig.json`
 
 ```bash
     # replace those with "< >" to how you setup your postgres
@@ -106,6 +87,25 @@
     }
 ```
 
+3. Create Postgres database
+   - `make sure to add postgres bin to environmental variables`
+
+```bash
+    createdb <db-name>
+    # or run the recreate sciprt
+    npm run schema:drop # !WARNING - this will recreate the database so only run this initially
+```
+
+4. Setup `.env` and `.env.development`
+
+```bash
+    # Content of .env and .env.development should have these 4 variables
+    PORT=4000
+    BASE_URL=http://localhost
+    ACCESS_TOKEN_SECRET=access_token_secret_here
+    REFRESH_TOKEN_SECRET=refresh_token_secret_here
+```
+
 5. Initialize migrations
 
 ```bash
@@ -126,6 +126,18 @@
     cd ./<project-name>/client && npm install
     # or
     cd ./<project-name>/client && yarn
+```
+
+2. Run the generate script to sync server schema to the client
+
+```bash
+    npm run gen
+```
+
+3. Start the server
+
+```bash
+    npm run dev
 ```
 
 ---

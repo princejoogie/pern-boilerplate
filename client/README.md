@@ -1,4 +1,4 @@
-# Notes
+# CLIENT
 
 ## Realtime sync with server
 
@@ -19,7 +19,9 @@ const { loading, error, data } = useQuery(GET_USERS, {
 // package.json
 {
   "scripts": {
-    "generate": "graphql-codegen"
+    "gen": "graphql-codegen --config codegen.yml"
   }
 }
 ```
+
+- then run `npm run gen`
